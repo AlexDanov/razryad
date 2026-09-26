@@ -1,27 +1,46 @@
-# Разряд — тренажёр систем счисления
+// Разряд — service worker. При обновлении игры увеличьте номер версии.
+const VERSION = 'razryad-v1';
+const CORE = [
+  './', './index.html', './manifest.webmanifest',
+  './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
+  './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
+];
 
-Игра-тренажёр для 8–11 классов: переводы между системами счисления (2, 4, 8, 10, 16 и любые основания до 16).
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+});
 
-## Размещение на GitHub Pages
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
 
-1. Скопируйте все файлы из архива в корень репозитория (или в папку, например `/razryad/`).
-2. Settings → Pages → Source: ветка `main`, папка `/ (root)`.
-3. Откройте `https://<логин>.github.io/<репозиторий>/`.
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
 
-Все пути относительные, поэтому игра работает и в корне сайта, и в подпапке.
+  // Страница: сначала сеть (чтобы обновления приходили сразу), без сети — из кэша.
+  if (req.mode === 'navigate') {
+    e.respondWith(
+      fetch(req)
+        .then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put('./index.html', copy)); return r; })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
 
-## Установка как приложение
-
-- Android / Chrome: меню → «Установить приложение» (или «Добавить на главный экран»).
-- iPhone / Safari: «Поделиться» → «На экран «Домой»».
-- ПК / Chrome, Edge: значок установки в адресной строке.
-
-После первого открытия игра работает без интернета.
-
-## Обновление
-
-Замените `index.html` и увеличьте `VERSION` в `sw.js` (например, `razryad-v2`), иначе у части учеников может остаться старая версия в кэше.
-
-## Данные
-
-История и рекорды хранятся в `localStorage` браузера ученика, на сервер ничего не отправляется.
+  // Остальное (иконки, шрифты Google): из кэша, параллельно обновляем в фоне.
+  const url = new URL(req.url);
+  const cacheable = url.origin === location.origin ||
+    url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
+  if (!cacheable) return;
+  e.respondWith(
+    caches.open(VERSION).then(c => c.match(req).then(hit => {
+      const net = fetch(req).then(r => { if (r.ok || r.type === 'opaque') c.put(req, r.clone()); return r; }).catch(() => hit);
+      return hit || net;
+    }))
+  );
+});
