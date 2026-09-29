@@ -1,5 +1,5 @@
 // Разряд — service worker. При обновлении игры увеличьте номер версии.
-const VERSION = 'razryad-v2';
+const VERSION = 'razryad-v6';
 const CORE = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',

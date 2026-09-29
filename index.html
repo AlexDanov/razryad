@@ -41,7 +41,7 @@
   --tile:#ffffff; --tile-b:rgba(35,45,120,.13);
   --bin:#0b9c97; --hex:#6d3ff0; --oct:#d67a04; --quad:#15963f; --arb:#d81b60;
   --ok:#0ea371; --bad:#e23b3b; --brand:#4338ca;
-  --key:#ffffff; --shade:rgba(25,30,90,.14);
+  --key:#ffffff; --shade:rgba(25,30,90,.14); --ear:#191b3a;
   color-scheme:light;
 
   box-sizing:border-box;
@@ -55,7 +55,7 @@
     --tile:#212558; --tile-b:rgba(160,170,255,.14);
     --bin:#2ee0cf; --hex:#a98bff; --oct:#ffc23d; --quad:#57e38a; --arb:#ff6f9a;
     --ok:#3ee6a4; --bad:#ff5d5d; --brand:#8b8cff;
-    --key:#232760; --shade:rgba(0,0,0,.35);
+    --key:#232760; --shade:rgba(0,0,0,.35); --ear:#07081c;
     color-scheme:dark;
   }
 }
@@ -65,7 +65,7 @@
   --tile:#212558; --tile-b:rgba(160,170,255,.14);
   --bin:#2ee0cf; --hex:#a98bff; --oct:#ffc23d; --quad:#57e38a; --arb:#ff6f9a;
   --ok:#3ee6a4; --bad:#ff5d5d; --brand:#8b8cff;
-  --key:#232760; --shade:rgba(0,0,0,.35);
+  --key:#232760; --shade:rgba(0,0,0,.35); --ear:#07081c;
   color-scheme:dark;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -194,6 +194,9 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
 .k.wide{grid-column:span 2}
 .k.go{background:var(--ok);border-color:var(--ok);color:#fff}
 .k.bs{color:var(--ink2)}
+.k.hp{color:var(--oct);font-family:var(--ui);font-weight:800}
+.k.hp.nudge{animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{50%{background:color-mix(in srgb,var(--oct) 22%,var(--key));border-color:var(--oct)}}
 .k.press{transform:translateY(2px);box-shadow:none}
 .k.off{opacity:.22;pointer-events:none}
 .khint{display:none;text-align:center;font-size:12px;color:var(--muted);padding:0 0 10px}
@@ -251,6 +254,43 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
 .empty{color:var(--muted);font-size:14px;padding:6px 0}
 .linkbtn{background:none;border:0;color:var(--bad);font-weight:700;cursor:pointer;padding:8px 0;margin-top:10px}
 
+/* Ear: points on the active tile */
+.tile.active{z-index:3}
+.ear{position:absolute;left:-2px;bottom:calc(100% - 2px);z-index:2;height:28px;min-width:50px;padding:2px 12px 0;
+  display:none;align-items:center;justify-content:center;
+  border:3px solid var(--acc);border-bottom:0;border-radius:13px 13px 0 0;
+  background:var(--tile);color:color-mix(in srgb,var(--acc) 58%,var(--tile));
+  font:700 15px/1 var(--ui);letter-spacing:.02em;font-variant-numeric:tabular-nums;transition:color .3s,border-color .2s}
+.tile.active .ear,.tile.ok .ear{display:flex}
+.tile.active .card,.tile.ok .card{border-top-left-radius:0}
+.tile.ok .ear{border-color:var(--ok);color:var(--ok)}
+.tile.active .card::before,.tile.ok .card::before{display:none}
+.tile.vanish .ear{opacity:0;transition:opacity .15s}
+.ear.low{color:color-mix(in srgb,var(--muted) 60%,var(--tile))}
+.ear.hit{animation:earhit .32s}
+@keyframes earhit{35%{transform:translateY(-3px) scale(1.15)}}
+.fly{position:fixed;left:0;top:0;z-index:30;pointer-events:none;font:800 20px/1 var(--ui);color:var(--ok);text-shadow:0 2px 10px var(--shade)}
+.stat.bump strong{animation:bump .38s}
+@keyframes bump{40%{transform:scale(1.28);color:var(--ok)}}
+/* Explanation after a mistake */
+.explain{position:absolute;left:12px;right:12px;z-index:8;pointer-events:auto;cursor:pointer;background:var(--panel);
+  border:2px solid var(--acc);border-radius:14px;padding:9px 12px;text-align:center;color:var(--ink);
+  font:700 16px/1.45 var(--mono);box-shadow:0 12px 30px -10px var(--shade);animation:exin .22s ease-out}
+.explain sub{top:.4em;font-size:10px}
+.explain small{display:block;font:600 12px/1.4 var(--ui);color:var(--ink2);margin-top:2px}
+.explain b{display:block;font:700 11px/1 var(--ui);color:var(--muted);margin-bottom:4px}
+@keyframes exin{from{opacity:0;transform:translateY(6px)}}
+/* Daily goal */
+.daily{display:flex;align-items:center;gap:12px;background:var(--bg2);border-radius:14px;padding:10px 12px;margin:0 0 16px}
+.ring{width:44px;height:44px;flex:none;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:5}
+.ring .rb{stroke:color-mix(in srgb,var(--ink) 12%,transparent)}
+.ring .rf{stroke:var(--ok);stroke-linecap:round}
+.daily strong{display:block;font:800 15px/1.3 var(--ui);color:var(--ink)}
+.daily span{display:block;font:600 13px/1.35 var(--ui);color:var(--ink2)}
+.sk-n small{display:block;font:600 11px/1.3 var(--ui);color:var(--muted)}
+.ibtn.off{opacity:.55}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -263,6 +303,7 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
     <div class="stat"><span>Уровень</span><strong id="hLvl">1</strong></div>
     <div class="stat"><span>Очки</span><strong id="hScore">0</strong></div>
     <div class="stat combo"><span>Серия</span><strong id="hCombo">×1.0</strong></div>
+    <button class="ibtn" id="bSound" aria-label="Звук"></button>
     <button class="ibtn" id="bPause" aria-label="Пауза"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg></button>
     <button class="ibtn" id="bStats" aria-label="Прогресс"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 15l4-5 3 3 5-7"/></svg></button>
   </header>
@@ -276,7 +317,7 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
     </div>
   </main>
   <div class="keypad" id="keypad"></div>
-  <div class="khint">↑ ↓ — выбрать плашку · 0–9, A–F — ввод · Enter — проверить · Esc — пауза</div>
+  <div class="khint">↑ ↓ — плашка · 0–9, A–F — ввод · ← → Backspace Delete — исправить · Enter — проверить · ? — как решать · Esc — пауза</div>
 </div>
 
 <div class="ov" id="ovStart"><div class="panel">
@@ -284,11 +325,12 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
   <h2>Разряд</h2>
   <p>Тренажёр по системам счисления. Переводи числа, пока стакан не заполнился.</p>
   <ul class="rules">
-    <li class="fam-bin"><i></i>Набери ответ — подтверждать не нужно: верный ответ засчитается сам.</li>
-    <li class="fam-hex"><i></i>Плашку выбирай тапом или стрелками ↑ ↓. Двоичные ответы можно ставить тапом по квадратикам.</li>
-    <li class="fam-oct"><i></i>Быстрые ответы и серия без ошибок дают больше очков. Enter проверяет ответ, но за ошибку снимает очки.</li>
-    <li class="fam-arb"><i></i>Каждые 8 решённых задач — новый уровень.</li>
+    <li class="fam-bin"><i></i>Набери ответ — верный засчитается сам. Плашку выбирай тапом или ↑ ↓.</li>
+    <li class="fam-oct"><i></i>На ушке — очки за плашку. Они тают, пока думаешь. Первое исправление бесплатно.</li>
+    <li class="fam-hex"><i></i>Не знаешь как? Кнопка «?» покажет решение, но очки за плашку упадут до минимума.</li>
+    <li class="fam-arb"><i></i>Серия без ошибок поднимает множитель. 8 задач — новый уровень.</li>
   </ul>
+  <div id="dStart"></div>
   <h4>Начать с уровня</h4>
   <div class="chips" id="chips"></div>
   <div class="row"><button class="btn" id="bPlay" data-primary>Играть</button><button class="btn alt" data-stats>Мой прогресс</button></div>
@@ -308,6 +350,7 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
   <p>очков</p>
   <div class="grid3" id="oGrid"></div>
   <div id="oNote"></div>
+  <div id="dOver"></div>
   <div class="row"><button class="btn" id="bAgain" data-primary>Новая игра</button><button class="btn alt" data-stats>Мой прогресс</button></div>
 </div></div>
 
@@ -323,7 +366,8 @@ sub{font:700 12px/1 var(--mono);color:var(--ink2);position:relative;top:.55em;ma
 'use strict';
 const $ = s => document.querySelector(s);
 const KEY = 'razryad.v1', GOAL = 8, DIG = '0123456789ABCDEF';
-const SPAWN_DROP = 36, SPAWN_TIME = .2; // появление: короткий сдвиг вниз за 200 мс
+const SPAWN_DROP = 36, SPAWN_TIME = .2;
+const GRACE = 2.5, FLOOR = .3, FIX_PEN = .15, WRONG_PEN = .25, DAY_GOAL = 30; // появление: короткий сдвиг вниз за 200 мс
 const POW = [4, 8, 16], ARB = [3, 5, 6, 7, 9, 11, 12, 13, 14, 15];
 const CATS = {b2d:'2 → 10', d2b:'10 → 2', b2p:'2 → 4, 8, 16', p2b:'4, 8, 16 → 2', p2d:'4, 8, 16 → 10',
   d2p:'10 → 4, 8, 16', p2p:'4 ↔ 8 ↔ 16', a2d:'любая → 10', d2a:'10 → любая'};
@@ -372,7 +416,7 @@ function cfg(l){
 }
 
 // ---------- Storage ----------
-const defStore = () => ({v:1, games:[], best:0, maxLevel:1});
+const defStore = () => ({v:1, games:[], best:0, maxLevel:1, days:{}, rec:{}, sound:true});
 function loadStore(){
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.games)) return Object.assign(defStore(), s); } catch(e){}
   return defStore();
@@ -382,7 +426,7 @@ let store = loadStore();
 
 // ---------- DOM ----------
 const wellEl = $('#well'), tilesEl = $('#tiles'), fxEl = $('#fx'), guidesEl = $('#guides');
-const G = {W:0, H:0, tileH:62, gap:6, pad:8, cap:6};
+const G = {W:0, H:0, tileH:62, gap:14, pad:8, cap:6};
 function measure(){
   const r = wellEl.getBoundingClientRect();
   G.W = r.width; G.H = r.height;
@@ -390,7 +434,7 @@ function measure(){
   if (G.H < 330) G.tileH = 50;
   wellEl.style.setProperty('--tile-h', G.tileH + 'px');
   wellEl.style.setProperty('--sq', (G.W < 400 ? 22 : 26) + 'px');
-  G.cap = Math.max(3, Math.floor((G.H - 2*G.pad + G.gap) / (G.tileH + G.gap)));
+  G.cap = Math.max(3, Math.floor((G.H - 2*G.pad - 26 + G.gap) / (G.tileH + G.gap)));
   let h = '';
   for (let i = 0; i < G.cap; i++) h += `<div class="guide${i === G.cap-1 ? ' top' : ''}" style="top:${slotY(i)}px"></div>`;
   guidesEl.innerHTML = h;
@@ -428,7 +472,7 @@ let S = null, tiles = [], activeId = null, uid = 0, gid = 0, startLevel = 1, ove
 
 function newState(level){
   return {id:++gid, level, startLevel:level, lvlSolved:0, score:0, combo:0, bestCombo:0, solved:0, errors:0,
-    times:[], cats:{}, recent:[], seen:new Set(), repeatQ:[], spawned:0, stage:1, stageCnt:{}, dprog:{}, t:0, nextSpawn:.3, running:true, over:false, peak:0, saved:false, started:Date.now()};
+    times:[], cats:{}, recent:[], seen:new Set(), repeatQ:[], spawned:0, stage:1, stageCnt:{}, dprog:{}, chain:0, pace:1, pending:0, beat:0, t:0, nextSpawn:.3, running:true, over:false, peak:0, saved:false, started:Date.now()};
 }
 const catStat = c => S.cats[c] || (S.cats[c] = {n:0, e:0, t:0});
 
@@ -540,7 +584,7 @@ function buildTask(c, f, t, v, rep){
     bits: mode === 'fixed' ? new Array(width).fill(0) : null, text:'', cur:0,
     hint:c.hint, weights: c.weights && (f === 2 || t === 2), group:groupOf(f, t),
     cat:catOf(f, t), fam:famOf(f, t), maxF: Math.min(12, c.bits[1] + 2),
-    born:S.t, think:0, wrong:0, helped:false, slot:0, y:0, fallV:0, dropping:true, state:'live', el:null};
+    born:S.t, think:0, fixes:0, taps:0, pen:0, shown:null, base:WEIGHT[catOf(f, t)] * (.6 + v.toString(2).length / 10) * 2, wrong:0, helped:false, slot:0, y:0, fallV:0, dropping:true, state:'live', el:null};
 }
 
 // ---------- Rendering ----------
@@ -575,7 +619,7 @@ function ansHTML(t){
   return `<span class="bits in">${h}</span>${full ? '<sub>2</sub>' : ''}`;
 }
 function render(t){
-  const card = t.el.firstChild;
+  const card = t.card;
   card.className = 'card fam-' + t.fam + (t.weights ? ' w' : '');
   card.innerHTML = (t.rep ? '<span class="rep" title="Повтор">↻ повтор</span>' : '') + `<div class="q">${leftHTML(t)}</div><div class="eq">=</div><div class="a">${ansHTML(t)}</div>`;
 }
@@ -584,7 +628,9 @@ function render(t){
 const act = () => tiles.find(t => t.id === activeId && t.state === 'live') || null;
 function setActive(t){
   activeId = t ? t.id : null;
+  { const hk = document.querySelector('.k.hp'); if (hk) hk.classList.remove('nudge'); }
   for (const x of tiles) x.el.classList.toggle('active', x.id === activeId);
+  if (t) updEar(t);
   updateKeys();
 }
 function moveSel(dir){
@@ -619,10 +665,10 @@ function inputDigit(d){
 function backspace(){
   if (!S || !S.running) return;
   const t = act(); if (!t) return;
-  if (t.mode === 'fixed'){ t.bits.pop(); t.bits.unshift(0); }
+  if (t.mode === 'fixed'){ if (!t.bits.some(Boolean)) return; t.bits.pop(); t.bits.unshift(0); }
   else if (t.mode === 'text'){ if (!t.cur) return; t.text = t.text.slice(0, t.cur - 1) + t.text.slice(t.cur); t.cur--; }
-  else t.text = t.text.slice(0, -1);
-  changed(t);
+  else { if (!t.text) return; t.text = t.text.slice(0, -1); }
+  fix(t); changed(t);
 }
 function delForward(){
   if (!S || !S.running) return;
@@ -630,7 +676,7 @@ function delForward(){
   if (t.mode !== 'text'){ clearInput(); return; }
   if (t.cur >= t.text.length) return;
   t.text = t.text.slice(0, t.cur) + t.text.slice(t.cur + 1);
-  changed(t);
+  fix(t); changed(t);
 }
 function moveCaret(d, abs){
   if (!S || !S.running) return;
@@ -641,8 +687,9 @@ function moveCaret(d, abs){
 function clearInput(){
   if (!S || !S.running) return;
   const t = act(); if (!t) return;
+  if (t.mode === 'fixed' ? !t.bits.some(Boolean) : !t.text) return;
   if (t.mode === 'fixed') t.bits.fill(0); else { t.text = ''; t.cur = 0; }
-  render(t);
+  fix(t); render(t);
 }
 function submit(){
   if (!S || !S.running) return;
@@ -656,16 +703,15 @@ function nope(t){ t.el.classList.add('nope'); setTimeout(() => t.el.classList.re
 function lock(t){
   if (t.state !== 'live') return;
   t.state = 'ok'; t.el.classList.add('ok');
-  const dt = S.t - t.born, c = cfg(S.level);
-  S.solved++; S.lvlSolved++; S.times.push(dt);
-  const cs = catStat(t.cat); cs.n++; cs.t += dt;
-  const speed = Math.max(0, 1 - dt / (c.spawn * 1.6));
-  const cm = 1 + Math.min(S.combo, 10) * .1;
-  const size = .6 + t.v.toString(2).length / 10;
-  const pts = Math.round(WEIGHT[t.cat] * size * (1 + speed) * cm);
+  const tt = t.think;
+  S.solved++; S.lvlSolved++; S.times.push(tt);
+  const cs = catStat(t.cat); cs.n++; cs.t += tt;
+  const pts = pot(t);
+  t.ear.classList.remove('low'); t.ear.textContent = '+' + pts;
   advance(t, 1);
-  S.combo++; S.bestCombo = Math.max(S.bestCombo, S.combo); S.score += pts;
-  floater(t, '+' + pts); burst(t); vibrate(10);
+  S.combo++; S.chain++; S.bestCombo = Math.max(S.bestCombo, S.combo); S.score += pts;
+  flyScore(t, pts); burst(t); vibrate(10); SFX.chime(S.chain);
+  record(t, tt); dailyTick();
   if (activeId === t.id) pickNext(t);
   const g = S.id;
   setTimeout(() => {
@@ -677,9 +723,12 @@ function lock(t){
   hud();
 }
 function wrong(t){
-  t.wrong++; S.errors++; advance(t, -1); catStat(t.cat).e++; S.combo = 0; S.score = Math.max(0, S.score - 3);
+  t.wrong++; S.errors++; advance(t, -1); catStat(t.cat).e++;
+  const before = pot(t); S.combo = 0; S.chain = 0;
   if (t.mode === 'fixed') t.bits.fill(0); else { t.text = ''; t.cur = 0; }
-  if (t.wrong >= 2 && !t.helped){
+  t.taps = 0;
+  const helpNow = t.wrong >= 2 && !t.helped;
+  if (helpNow){
     t.helped = true; t.hint = true;
     if (t.from === 2 && t.v < 256) t.weights = true;
     if (t.to === 2){
@@ -687,9 +736,243 @@ function wrong(t){
       t.bits = new Array(t.width).fill(0); t.weights = t.width <= 8;
     }
   }
+  t.pen = 1; t.explained = true;
+  lose(t, before - pot(t));
   render(t);
   t.el.classList.remove('shake'); void t.el.offsetWidth; t.el.classList.add('shake');
-  floater(t, '−3', 'bad'); vibrate(40); hud();
+  SFX.wrong(); vibrate(40); hud();
+  explain(t);
+}
+
+// ---------- Points on the ear ----------
+function potF(t){
+  const c = cfg(S.level), grace = GRACE + .35 * t.ans.length, span = c.spawn * 1.2 + t.ans.length;
+  const f = Math.max(FLOOR, 1 - Math.max(0, t.think - grace) / span);
+  return Math.max(.12, f - t.pen);
+}
+const pot = t => Math.max(1, Math.round(t.base * potF(t) * (1 + Math.min(S.combo, 10) * .1)));
+function updEar(t){
+  if (!t.ear || t.state !== 'live') return;
+  const v = pot(t);
+  if (v !== t.shown){ t.shown = v; t.ear.textContent = '+' + v; }
+  const low = potF(t) <= FLOOR + .01;
+  t.ear.classList.toggle('low', low);
+  const hk = document.querySelector('.k.hp'); if (hk) hk.classList.toggle('nudge', low && !t.explained);
+}
+function lose(t, n){
+  updEar(t);
+  if (n <= 0) return;
+  t.ear.classList.remove('hit'); void t.ear.offsetWidth; t.ear.classList.add('hit');
+  const f = document.createElement('div'); f.className = 'fl bad'; f.textContent = '−' + n;
+  f.style.top = (t.y - 44) + 'px'; f.style.right = 'auto'; f.style.left = (G.pad + 64) + 'px';
+  fxEl.appendChild(f); setTimeout(() => f.remove(), 1000);
+}
+function fix(t){
+  t.fixes++;
+  if (t.fixes < 2) return;
+  const b = pot(t); t.pen = Math.min(1, t.pen + FIX_PEN); lose(t, b - pot(t)); SFX.thud();
+}
+function tap(t, allow){ t.taps++; if (t.taps > allow) fix(t); }
+function flyScore(t, pts){
+  S.pending += pts;
+  const g = S.id, done = () => {
+    if (!S || S.id !== g) return;
+    S.pending -= pts; hud(); SFX.coin();
+    const st = $('#hScore').parentNode; st.classList.remove('bump'); void st.offsetWidth; st.classList.add('bump');
+  };
+  const a = t.ear.getBoundingClientRect(), b = $('#hScore').getBoundingClientRect();
+  if (!document.body.animate || !a.width){ done(); return; }
+  const f = document.createElement('div'); f.className = 'fly'; f.textContent = '+' + pts;
+  document.body.appendChild(f);
+  const x0 = a.left, y0 = a.top - 4, x1 = b.left + b.width / 2 - 14, y1 = b.top;
+  const an = f.animate([
+    {transform:`translate(${x0}px,${y0}px) scale(1)`, opacity:1},
+    {transform:`translate(${x0 + (x1 - x0) * .2}px,${y1 + (y0 - y1) * .45}px) scale(1.35)`, opacity:1, offset:.45},
+    {transform:`translate(${x1}px,${y1}px) scale(.7)`, opacity:.3}
+  ], {duration:700, easing:'cubic-bezier(.35,.1,.45,1)'});
+  an.onfinish = () => { f.remove(); done(); };
+}
+
+// ---------- Records & daily goal ----------
+function bigFloat(t, txt){
+  const f = document.createElement('div'); f.className = 'fl big'; f.textContent = txt;
+  f.style.top = Math.max(8, t.y - 34) + 'px'; fxEl.appendChild(f); setTimeout(() => f.remove(), 1000);
+}
+function record(t, tt){
+  if (t.wrong || t.helped || t.explained) return;
+  const r = store.rec[t.cat];
+  if (!r){ store.rec[t.cat] = {t:+tt.toFixed(2), n:1}; return; }
+  r.n++;
+  if (tt < r.t){
+    r.t = +tt.toFixed(2);
+    if (r.n > 3){ bigFloat(t, `Рекорд ${CATS[t.cat]}: ${fmtT(tt)} с`); setTimeout(SFX.record, 250); }
+  }
+}
+const pad2 = n => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+const dni = n => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'день' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'дня' : 'дней'; };
+function streak(){
+  const d = new Date(); let n = 0;
+  if ((store.days[dayKey(d)] || 0) < DAY_GOAL) d.setDate(d.getDate() - 1);
+  while ((store.days[dayKey(d)] || 0) >= DAY_GOAL){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function dailyTick(){
+  const k = dayKey(); store.days[k] = (store.days[k] || 0) + 1;
+  if (store.days[k] === DAY_GOAL){
+    const s = streak();
+    setTimeout(() => { showBanner('Цель дня выполнена!', s > 1 ? `Серия: ${s} ${dni(s)} подряд.` : 'Приходи завтра — начнётся серия.'); SFX.goal(); }, 900);
+  }
+  saveStore();
+}
+function dailyHTML(){
+  const today = store.days[dayKey()] || 0, p = Math.min(1, today / DAY_GOAL), s = streak(), C = 113.1;
+  const head = today >= DAY_GOAL ? `Цель дня выполнена: ${today}` : `Сегодня ${today} из ${DAY_GOAL} задач`;
+  const sub = s ? (today >= DAY_GOAL ? `Серия: ${s} ${dni(s)} подряд` : `Серия: ${s} ${dni(s)} — продли сегодня`)
+                : 'Решай 30 задач в день — начнётся серия';
+  return `<div class="daily"><svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="rb" cx="22" cy="22" r="18"/>`
+    + (p > 0 ? `<circle class="rf" cx="22" cy="22" r="18" stroke-dasharray="${(p * C).toFixed(1)} ${C}"/>` : '') + `</svg>`
+    + `<div><strong>${head}</strong><span>${sub}</span></div></div>`;
+}
+
+// ---------- Explanation after a mistake ----------
+const SB = b => `<sub>${b}</sub>`;
+// Сложность «мысленно»: маленькие числа и степени двойки/«все единицы» ученик помнит
+const easyCost = x => x <= 7 || (x & (x + 1)) === 0 || (x & (x - 1)) === 0 ? 1 : x <= 15 ? 1.4 : popc(x);
+function binWays(v){
+  const s = v.toString(2), n = s.length, ones = popc(v), zeros = n - ones, W = [];
+  const B2 = x => `${x.toString(2)}${SB(2)}`;
+  // сумма весов
+  const terms = []; for (let i = n - 1; i >= 0; i--) if ((v >> i) & 1) terms.push(2 ** i);
+  W.push({cost:ones, fwd: terms.length > 1 ? `${terms.join(' + ')} = ${v}` : `${v}`, rev: terms.length > 1 ? `${v} = ${terms.join(' + ')}` : `${v} = ${v}`});
+  // все единицы: 111111 = 64 − 1
+  if (zeros === 0 && n >= 2)
+    W.push({cost:.8, fwd:`${B2(2 ** n)} − 1 = ${2 ** n} − 1 = ${v}`, rev:`${v} = ${2 ** n} − 1 = ${B2(2 ** n)} − 1`});
+  // мало нулей: 111011 = 63 − 4
+  if (zeros >= 1 && n >= 4){
+    const miss = []; for (let i = n - 1; i >= 0; i--) if (!((v >> i) & 1)) miss.push(2 ** i);
+    const full = 2 ** n - 1;
+    W.push({cost:zeros * 1.2 + 1,
+      fwd:`${'1'.repeat(n)}${SB(2)} − ${B2(full - v)} = ${full} − ${miss.join(' − ')} = ${v}`,
+      rev:`${v} = ${full} − ${miss.join(' − ')} = ${'1'.repeat(n)}${SB(2)} − ${B2(full - v)}`});
+  }
+  // нули в конце: 11100 = 7 · 4
+  let k0 = 0; while (!((v >> k0) & 1)) k0++;
+  const core = v >> k0;
+  if (k0 >= 2 && core > 1)
+    W.push({cost:.6 + easyCost(core),
+      fwd:`${B2(core)} · ${2 ** k0} = ${core} · ${2 ** k0} = ${v}`,
+      rev:`${v} = ${core} · ${2 ** k0} = ${B2(core)} · ${B2(2 ** k0)}`});
+  // старшая часть × степень + младшая: 11001 = 3 · 8 + 1, 10100111 = 10 · 16 + 7
+  for (let k = 2; k <= n - 2; k++){
+    const hi = v >> k, lo = v & (2 ** k - 1);
+    if (hi < 2 || !lo) continue;
+    // удобнее всего резать там, где начинается серия из 2+ нулей: 11|001 → 3 · 8 + 1
+    const atZeros = (hi & 1) === 1 && !((lo >> (k - 2)) & 3);
+    const cost = .4 + easyCost(hi) + easyCost(lo) + (k > 4 ? .15 * (k - 4) : 0) - (atZeros ? .3 : 0);
+    const loS = lo.toString(2).padStart(k, '0');
+    W.push({cost, hi,
+      fwd:`${hi.toString(2)} ${loS}${SB(2)} = ${hi} · ${2 ** k} + ${lo} = ${v}`,
+      rev:`${v} = ${hi} · ${2 ** k} + ${lo} → ${hi.toString(2)} | ${loS}`});
+  }
+  return W.sort((a, b) => a.cost - b.cost || (a.hi ?? 0) - (b.hi ?? 0))[0];
+}
+function explainHTML(t){
+  const f = t.from, to = t.to, v = t.v, bin = v.toString(2);
+  const pos = base => {
+    const ds = v.toString(base).toUpperCase(), n = ds.length, terms = [];
+    for (let i = 0; i < n; i++){ const d = parseInt(ds[i], base), p = base ** (n - 1 - i);
+      if (d) terms.push(p === 1 ? `${d}` : d === 1 ? `${p}` : `${d} · ${p}`); }
+    return terms.join(' + ');
+  };
+  const letters = str => { const L = [...new Set(str.replace(/[0-9]/g, '').split(''))].sort(); return L.length ? `<small>${L.map(c => `${c} = ${parseInt(c, 16)}`).join(', ')}</small>` : ''; };
+  const groups = base => { const g = Math.log2(base), pad = (g - bin.length % g) % g, s = '0'.repeat(pad) + bin, out = [];
+    for (let i = 0; i < s.length; i += g) out.push(s.slice(i, i + g)); return out; };
+  if (f === 2 && to === 10) return `${bin}${SB(2)} = ${binWays(v).fwd}`;
+  if (f === 10 && to === 2) return `${binWays(v).rev} → ${bin}${SB(2)}`;
+  if (f === 2 || to === 2){
+    const P = f === 2 ? to : f, gs = groups(P), ds = gs.map(x => parseInt(x, 2).toString(16).toUpperCase());
+    const map = gs.map((x, i) => `${x} → ${ds[i]}`).join(', ');
+    return f === 2 ? `${gs.join(' ')}${SB(2)} = ${ds.join('')}${SB(P)}<small>по ${Math.log2(P)} бита справа: ${map}</small>`
+                   : `${t.q}${SB(P)} = ${gs.join(' ')}${SB(2)}<small>каждая цифра — ${Math.log2(P)} бита: ${ds.map((d, i) => `${d} → ${gs[i]}`).join(', ')}</small>`;
+  }
+  if (to === 10) return `${t.q}${SB(f)} = ${pos(f)} = ${v}${letters(t.q)}`;
+  if (f === 10) return `${v} = ${pos(to)} → ${t.ans}${SB(to)}${letters(t.ans)}`;
+  const g1 = groups(f), g2 = groups(to);
+  return `${t.q}${SB(f)} = ${g1.join(' ')}${SB(2)} = ${g2.join(' ')}${SB(2)} = ${t.ans}${SB(to)}<small>через двоичную: по ${Math.log2(f)} и по ${Math.log2(to)} бита</small>`;
+}
+let explainEl = null;
+function askHelp(){
+  if (!S || !S.running) return;
+  const t = act(); if (!t) return;
+  if (!t.explained){ const b = pot(t); t.pen = 1; t.explained = true; lose(t, b - pot(t)); SFX.thud(); }
+  explain(t);
+}
+function explain(t){
+  if (explainEl) explainEl.remove();
+  const e = document.createElement('div'); e.className = 'explain fam-' + t.fam;
+  e.innerHTML = '<b>Как решать</b>' + explainHTML(t);
+  fxEl.appendChild(e); explainEl = e;
+  const h = e.offsetHeight, above = t.y - h - 38;
+  e.style.top = (above >= 6 ? above : t.y + G.tileH + 10) + 'px';
+  const close = () => { e.remove(); if (explainEl === e) explainEl = null; };
+  e.addEventListener('pointerdown', close);
+  setTimeout(close, 6000);
+}
+
+// ---------- Sound (Web Audio, synthesized — no files) ----------
+const SFX = (() => {
+  let ctx = null, out = null;
+  const on = () => store.sound !== false;
+  function init(){
+    if (ctx){ if (ctx.state === 'suspended') ctx.resume(); return true; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    try { ctx = new AC(); out = ctx.createGain(); out.gain.value = .55; out.connect(ctx.destination); } catch(e){ ctx = null; return false; }
+    return true;
+  }
+  function tone(freq, t0, dur, o = {}){
+    const osc = ctx.createOscillator(), g = ctx.createGain(), vol = o.vol || .15;
+    osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(freq, t0);
+    if (o.slide) osc.frequency.exponentialRampToValueAtTime(o.slide, t0 + dur);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + (o.att || .006));
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(g); g.connect(out); osc.start(t0); osc.stop(t0 + dur + .03);
+  }
+  function noise(t0, dur, o = {}){
+    const len = Math.floor(ctx.sampleRate * dur), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = buf; fl.type = o.type || 'bandpass'; fl.frequency.value = o.freq || 3000; fl.Q.value = o.q || 1;
+    g.gain.value = o.vol || .1; src.connect(fl); fl.connect(g); g.connect(out); src.start(t0);
+  }
+  const play = fn => { if (!on() || !init()) return; try { fn(ctx.currentTime + .01); } catch(e){} };
+  const PENTA = [0, 2, 4, 7, 9];
+  const note = (base, step) => base * Math.pow(2, (Math.floor(step / 5) * 12 + PENTA[step % 5]) / 12);
+  const arp = (t, base, steps, gap, vol, dur) => steps.forEach((st, i) => tone(base * Math.pow(2, st / 12), t + i * gap, dur, {type:'triangle', vol}));
+  return {
+    unlock: () => { if (on()) init(); },
+    key:    () => play(t => tone(1500, t, .035, {type:'triangle', vol:.025})),
+    // «волшебный звон»: каждая следующая верная плашка серии звучит на ступень выше
+    // звон поднимается по ступеням в пределах уровня (не выше 7-й ступени) и сбрасывается на новом уровне и после ошибки
+    chime:  c => play(t => { const f = note(392, Math.min(Math.max(c - 1, 0), 7));
+              tone(f, t, .6, {vol:.14}); tone(f * 2, t + .012, .4, {vol:.05}); tone(f * 1.5, t + .06, .5, {vol:.07, type:'triangle'});
+              tone(f * 3, t + .1, .25, {vol:.025}); }),
+    coin:   () => play(t => { tone(1318.5, t, .07, {type:'square', vol:.025}); tone(1760, t + .055, .12, {type:'square', vol:.025}); }),
+    thud:   () => play(t => { tone(190, t, .16, {vol:.2, slide:95}); noise(t, .05, {freq:400, vol:.05}); }),
+    wrong:  () => play(t => { noise(t, .22, {type:'highpass', freq:4500, vol:.07});
+              tone(233, t, .25, {type:'sawtooth', vol:.04, slide:150}); tone(247, t + .01, .25, {type:'sawtooth', vol:.035, slide:160}); }),
+    level:  () => play(t => arp(t, 523.25, [0, 4, 7, 12, 16], .08, .1, .4)),
+    goal:   () => play(t => { arp(t, 523.25, [0, 4, 7, 12], .1, .11, .45); arp(t + .45, 523.25, [7, 12, 16, 19, 24], .07, .09, .5); }),
+    record: () => play(t => arp(t, 783.99, [0, 7, 12], .07, .08, .3)),
+    beat:   () => play(t => { tone(68, t, .13, {vol:.28}); tone(60, t + .17, .13, {vol:.2}); }),
+    over:   () => play(t => arp(t, 392, [7, 4, 0, -5], .17, .1, .45)),
+  };
+})();
+function updSoundBtn(){
+  const on = store.sound !== false, b = $('#bSound');
+  b.classList.toggle('off', !on); b.setAttribute('aria-label', on ? 'Выключить звук' : 'Включить звук');
+  b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/>${on
+    ? '<path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>' : '<path d="M16 9.5l5 5M21 9.5l-5 5"/>'}</svg>`;
 }
 
 // ---------- Tiles lifecycle ----------
@@ -699,7 +982,8 @@ function spawn(){
   const t = makeTask(); t.slot = tiles.length;
   t.y = slotY(t.slot) - SPAWN_DROP; t.fallV = SPAWN_DROP / SPAWN_TIME;
   const el = document.createElement('div');
-  el.className = 'tile new'; el.dataset.id = t.id; el.innerHTML = '<div class="card"></div>';
+  el.className = 'tile new fam-' + t.fam; el.dataset.id = t.id; el.innerHTML = '<div class="ear"></div><div class="card"></div>';
+  t.ear = el.firstChild; t.card = el.lastChild;
   el.style.transform = `translate3d(0,${t.y}px,0)`;
   t.el = el; tilesEl.appendChild(el); render(t); tiles.push(t);
   setTimeout(() => el.classList.remove('new'), 220);
@@ -720,10 +1004,11 @@ function checkClean(){
   }
 }
 function levelUp(){
-  S.level++; S.lvlSolved = 0; S.stage = 1; S.stageCnt = {}; S.dprog = {};
+  S.level++; S.lvlSolved = 0; S.chain = 0; S.stage = 1; S.stageCnt = {}; S.dprog = {};
   if (S.level > store.maxLevel){ store.maxLevel = S.level; saveStore(); }
   showBanner('Уровень ' + S.level, cfg(S.level).desc);
   S.nextSpawn = Math.max(S.nextSpawn, 2.5);
+  SFX.level();
 }
 
 // ---------- FX ----------
@@ -752,7 +1037,7 @@ function showBanner(title, text){
 // ---------- HUD ----------
 function hud(){
   $('#hLvl').textContent = S ? S.level : 1;
-  $('#hScore').textContent = S ? S.score : 0;
+  $('#hScore').textContent = S ? S.score - S.pending : 0;
   $('#hCombo').textContent = '×' + (1 + Math.min(S ? S.combo : 0, 10) * .1).toFixed(1);
   $('#hBar').style.width = (S ? S.lvlSolved / GOAL * 100 : 0) + '%';
 }
@@ -763,13 +1048,17 @@ function frame(now){
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   if (S && S.running){
     S.t += dt; S.nextSpawn -= dt;
-    { const a = act(); if (a) a.think += dt; }
+    { const a = act(); if (a){ a.think += dt; updEar(a); } }
     const live = tiles.filter(t => t.state === 'live').length;
     if (live === 0 && S.nextSpawn > .6) S.nextSpawn = .6;
     // новая плашка появляется только когда стакан «успокоился»: никто не растворяется и не оседает
     const calm = tiles.every(t => t.state === 'live' && t.y === slotY(t.slot));
     if (S.nextSpawn <= 0 && calm){
-      S.nextSpawn = cfg(S.level).spawn * (.85 + Math.random() * .3);
+      // темп подстраивается под ученика: стакан держится заполненным примерно на 25–55%
+      const fill = live / G.cap;
+      if (fill < .25) S.pace = Math.max(.55, S.pace * .93);
+      else if (fill > .55) S.pace = Math.min(1.5, S.pace * 1.08);
+      S.nextSpawn = cfg(S.level).spawn * S.pace * (.85 + Math.random() * .3);
       spawn();
     }
     for (const t of tiles){
@@ -781,7 +1070,9 @@ function frame(now){
       } else if (t.y > ty){ t.y = ty; t.dropping = false; }
       t.el.style.transform = `translate3d(0,${t.y.toFixed(1)}px,0)`;
     }
-    wellEl.classList.toggle('danger', S.running && tiles.filter(t => t.state === 'live').length >= G.cap - 1);
+    const danger = tiles.filter(t => t.state === 'live').length >= G.cap - 1;
+    wellEl.classList.toggle('danger', danger);
+    if (danger){ S.beat -= dt; if (S.beat <= 0){ SFX.beat(); S.beat = .85; } } else S.beat = 0;
   }
   requestAnimationFrame(frame);
 }
@@ -805,7 +1096,7 @@ function pause(){
 }
 function resume(){ if (!S || S.over) return; hideOverlays(); S.running = true; last = performance.now(); }
 function gameOver(){
-  S.running = false; S.over = true; wellEl.classList.remove('danger');
+  S.running = false; S.over = true; wellEl.classList.remove('danger'); SFX.over();
   tiles.forEach((t, i) => { t.el.style.transitionDelay = (i * 60) + 'ms'; t.el.classList.add('dead'); });
   const prevBest = store.best;
   saveGame();
@@ -838,11 +1129,12 @@ function fillOver(record){
   if (errs.length) note = `Больше всего ошибок в переводе ${CATS[errs[0][0]]}. Попробуй начать с уровня ${CAT_LVL[errs[0][0]]} и потренировать именно его.`;
   else if (slow.length > 1) note = `Без ошибок! Медленнее всего получается ${CATS[slow[0][0]]} — в среднем ${fmtT(slow[0][1].t / slow[0][1].n)} с.`;
   $('#oNote').innerHTML = note ? `<div class="note">${note}</div>` : '';
+  $('#dOver').innerHTML = dailyHTML();
 }
 
 // ---------- Overlays ----------
 function hideOverlays(){ document.querySelectorAll('.ov').forEach(o => o.classList.remove('show')); overlay = null; }
-function show(id){ hideOverlays(); $('#' + id).classList.add('show'); overlay = id; if (id === 'ovStart') renderChips(); }
+function show(id){ hideOverlays(); $('#' + id).classList.add('show'); overlay = id; if (id === 'ovStart'){ renderChips(); $('#dStart').innerHTML = dailyHTML(); } }
 function openStats(){
   if (S && S.running) { S.running = false; prevOverlay = 'ovPause'; $('#pInfo').textContent = `Уровень ${S.level}, ${S.score} очков, решено ${S.solved}.`; }
   else prevOverlay = overlay || 'ovStart';
@@ -866,6 +1158,8 @@ $('#bRestart').onclick = () => { saveGame(); S.over = true; show('ovStart'); };
 $('#bBack').onclick = () => show(prevOverlay || 'ovStart');
 $('#bPause').onclick = () => { if (S && S.running) pause(); };
 $('#bStats').onclick = openStats;
+$('#bSound').onclick = () => { store.sound = store.sound === false; saveStore(); updSoundBtn(); SFX.unlock(); SFX.coin(); };
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => SFX.unlock(), {passive:true}));
 document.querySelectorAll('[data-stats]').forEach(b => b.onclick = openStats);
 $('#bReset').onclick = () => {
   if (!confirm('Стереть всю историю игр и рекорды?')) return;
@@ -925,12 +1219,12 @@ function activityChart(games){
 const dstr = ts => { const d = new Date(ts); return d.getDate().toString().padStart(2,'0') + '.' + (d.getMonth()+1).toString().padStart(2,'0'); };
 function renderStats(){
   const el = $('#statsBody'), g = store.games;
-  if (!g.length){ el.innerHTML = '<p class="empty">Здесь появится твой прогресс: очки, скорость и точность по каждому виду перевода. Сыграй первую игру!</p>'; return; }
+  if (!g.length){ el.innerHTML = dailyHTML() + '<p class="empty">Здесь появится твой прогресс: очки, скорость и точность по каждому виду перевода. Сыграй первую игру!</p>'; return; }
   const total = g.reduce((a, r) => a + r.n, 0), errs = g.reduce((a, r) => a + r.e, 0);
   const acc = total + errs ? Math.round(total / (total + errs) * 100) : 100;
   const tsum = g.reduce((a, r) => a + r.at * r.n, 0);
   const cell = (v, l) => `<div class="cell"><strong>${v}</strong><span>${l}</span></div>`;
-  let h = `<div class="grid3">${cell(g.length, 'игр')}${cell(store.best, 'рекорд')}${cell(store.maxLevel, 'макс. уровень')}${cell(total, 'решено всего')}${cell(acc + '%', 'точность')}${cell(total ? fmtT(tsum / total) + ' с' : '—', 'на задачу')}</div>`;
+  let h = dailyHTML() + `<div class="grid3">${cell(g.length, 'игр')}${cell(store.best, 'рекорд')}${cell(store.maxLevel, 'макс. уровень')}${cell(total, 'решено всего')}${cell(acc + '%', 'точность')}${cell(total ? fmtT(tsum / total) + ' с' : '—', 'на задачу')}</div>`;
 
   const lastG = g.slice(-30), off = g.length - lastG.length;
   let run = 0; const bestSoFar = g.map(r => (run = Math.max(run, r.s)));
@@ -965,7 +1259,7 @@ function renderStats(){
         if (r1 < r0 * .93) tr = '<span class="tr up" title="быстрее, чем раньше">▼</span>';
         else if (r1 > r0 * 1.07) tr = '<span class="tr dn" title="медленнее, чем раньше">▲</span>';
       }
-      h += `<div class="sk"><div class="sk-n">${CATS[k]}</div><div class="sk-b"><i style="width:${Math.round(ac*100)}%;${ac < .8 ? 'background:var(--oct)' : ''}"></i></div><div class="sk-a">${Math.round(ac*100)}%</div><div class="sk-t">${a.n ? fmtT(avg) + ' с' : '—'}${tr}</div></div>`;
+      h += `<div class="sk"><div class="sk-n">${CATS[k]}${store.rec[k] ? `<small>рекорд ${fmtT(store.rec[k].t)} с</small>` : ''}</div><div class="sk-b"><i style="width:${Math.round(ac*100)}%;${ac < .8 ? 'background:var(--oct)' : ''}"></i></div><div class="sk-a">${Math.round(ac*100)}%</div><div class="sk-t">${a.n ? fmtT(avg) + ' с' : '—'}${tr}</div></div>`;
       const sc = (1 - ac) * 3 + (a.n ? avg / avgAll : 0);
       if (a.n + a.e >= 3 && sc > worstScore){ worstScore = sc; worst = k; }
     }
@@ -976,17 +1270,18 @@ function renderStats(){
 }
 
 // ---------- Keypad ----------
-const KEYS = ['1','2','3','A','B','4','5','6','C','D','7','8','9','E','F','bs','0','go'];
+const KEYS = ['1','2','3','A','B','4','5','6','C','D','7','8','9','E','F','bs','help','0','go'];
 $('#keypad').innerHTML = KEYS.map(k => {
   if (k === 'bs') return `<button class="k bs" data-k="bs" aria-label="Стереть">⌫</button>`;
+  if (k === 'help') return `<button class="k hp" data-k="help" aria-label="Как решать">?</button>`;
   if (k === 'go') return `<button class="k go wide" data-k="go" aria-label="Проверить">✓</button>`;
-  return `<button class="k${/[A-F]/.test(k) ? ' hx' : ''}${k === '0' ? ' wide' : ''}" data-k="${k}">${k}</button>`;
+  return `<button class="k${/[A-F]/.test(k) ? ' hx' : ''}" data-k="${k}">${k}</button>`;
 }).join('');
 function updateKeys(){
   const t = act(), base = t ? t.to : 0;
   document.querySelectorAll('#keypad .k').forEach(b => {
     const k = b.dataset.k;
-    if (k === 'bs' || k === 'go') b.classList.toggle('off', !t);
+    if (k === 'bs' || k === 'go' || k === 'help') b.classList.toggle('off', !t);
     else b.classList.toggle('off', parseInt(k, 16) >= base);
   });
 }
@@ -998,7 +1293,8 @@ $('#keypad').addEventListener('pointerdown', e => {
   const k = b.dataset.k;
   if (k === 'bs'){ backspace(); bsTimer = setTimeout(clearInput, 480); }
   else if (k === 'go') submit();
-  else inputDigit(parseInt(k, 16));
+  else if (k === 'help') askHelp();
+  else { SFX.key(); inputDigit(parseInt(k, 16)); }
 });
 ['pointerup','pointercancel','pointerleave'].forEach(ev => $('#keypad').addEventListener(ev, () => clearTimeout(bsTimer)));
 
@@ -1018,10 +1314,11 @@ tilesEl.addEventListener('pointerdown', e => {
     render(t); return;
   }
   const sq = e.target.closest('.a .sq'); if (!sq) return;
-  if (t.mode === 'fixed'){ const i = +sq.dataset.i; t.bits[i] ^= 1; changed(t); }
+  // перебор битов наугад: переключения сверх необходимого считаются исправлениями
+  if (t.mode === 'fixed'){ const i = +sq.dataset.i; t.bits[i] ^= 1; tap(t, popc(t.v) + 1); changed(t); }
   else if (t.mode === 'free'){
-    if (sq.dataset.ghost){ if (t.text.length < t.maxF){ t.text += t.text ? '0' : '1'; changed(t); } }
-    else { const i = +sq.dataset.i, a = t.text.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.text = a.join(''); changed(t); }
+    if (sq.dataset.ghost){ if (t.text.length < t.maxF){ t.text += t.text ? '0' : '1'; tap(t, t.ans.length + popc(t.v)); changed(t); } }
+    else { const i = +sq.dataset.i, a = t.text.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.text = a.join(''); tap(t, t.ans.length + popc(t.v)); changed(t); }
   }
 });
 
@@ -1045,13 +1342,14 @@ document.addEventListener('keydown', e => {
   if (k === 'Home'){ e.preventDefault(); moveCaret(-1, true); return; }
   if (k === 'End'){ e.preventDefault(); moveCaret(1, true); return; }
   if (k === 'Enter' || k === ' '){ e.preventDefault(); submit(); return; }
+  if (k === '?' || k === 'F1' || k === ','){ e.preventDefault(); askHelp(); return; }
   if (/^[0-9a-fA-F]$/.test(k)){ e.preventDefault(); inputDigit(parseInt(k, 16)); }
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
 window.addEventListener('pagehide', () => { if (S && !S.over) saveGame(); });
 
 // ---------- Init ----------
-measure(); hud(); updateKeys(); show('ovStart');
+measure(); hud(); updateKeys(); updSoundBtn(); show('ovStart');
 })();
 </script>
 <script>
